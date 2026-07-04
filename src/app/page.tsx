@@ -8,6 +8,8 @@ import {
   WifiOff, Skull, ShieldCheck, ArrowRight, Users
 } from 'lucide-react';
 import EcosystemFooter from '@/components/EcosystemFooter';
+import Link from 'next/link';
+import { vectors } from '@/data/vectors';
 
 // aafiends.com is the app this whole site exists to funnel people toward —
 // previously there was no link to it anywhere on the page (2026-07-03 fix).
@@ -167,6 +169,40 @@ export default function Home() {
           </motion.div>
         </div>
       </motion.section>
+
+      {/* SECTION 1.5: THE 10 VECTORS — multi-addiction expansion (Phase 3.1).
+          Reframes the site from alcohol-only to the full Addiction Intelligence
+          Virus and funnels into the /the-virus pathogen database. */}
+      <section className="w-full border-b border-white/10 bg-black/40 px-6 md:px-12 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-xs font-bold uppercase tracking-widest text-red-500 bg-red-950/50 border border-red-500/50 rounded px-3 py-2 inline-flex items-center gap-2 mb-8">
+            <Biohazard size={14} /> Alcohol is Vector 01 of 10
+          </div>
+          <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tight leading-none mb-6">
+            One virus.<br /><span className="text-red-500">Ten vectors.</span>
+          </h2>
+          <p className="max-w-3xl text-neutral-300 font-mono text-lg leading-relaxed mb-10">
+            Alcohol is the strain we started with — but the same system infection runs on nine other vectors, each with the same architecture and its own sourced body count. Different payload, same virus.
+          </p>
+          <div className="flex flex-wrap gap-3 mb-10">
+            {vectors.map((v) => (
+              <Link
+                key={v.slug}
+                href={`/the-virus/${v.slug}`}
+                className="group flex items-center gap-2 bg-[#0a0a0a] border border-white/10 hover:border-red-500/50 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-wide text-neutral-300 hover:text-white transition-colors"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500" /> {v.name}
+              </Link>
+            ))}
+          </div>
+          <Link
+            href="/the-virus"
+            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-xl transition-colors"
+          >
+            Open the pathogen database <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
 
       {/* SECTION 2: THE FIREWALL (50/50 Layout with Vanguard Image) */}
       <motion.section

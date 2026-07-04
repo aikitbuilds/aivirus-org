@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://aivirus.org"),
   title: "AIVirus.org — System Infection Detected | The Alcohol Intelligence Virus",
-  description: "You don't have a willpower problem. You have a system infection. The Alcohol Intelligence Virus (AIV) hacks your operating system. Run the 12-question diagnostic and get your daily protocol.",
-  keywords: ["can't stop drinking", "alcohol intelligence virus", "12 steps alcoholism", "alcohol addiction diagnostic", "why can't I stop drinking"],
+  description: "You don't have a willpower problem. You have a system infection. The Addiction Intelligence Virus (AIV) hacks your operating system — across 10 vectors from alcohol and opioids to gambling, pornography, and gaming. Run the 12-question diagnostic and get your daily protocol.",
+  keywords: ["can't stop drinking", "addiction intelligence virus", "alcohol intelligence virus", "12 steps alcoholism", "alcohol addiction diagnostic", "why can't I stop drinking", "types of addiction", "behavioral addiction", "gambling addiction", "porn addiction", "gaming disorder", "social media addiction"],
   openGraph: {
     title: "AIVirus.org — System Infection Detected",
     description: "You don't have a willpower problem. You have a system infection. Run the 12-question diagnostic.",
