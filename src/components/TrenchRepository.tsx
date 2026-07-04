@@ -116,16 +116,17 @@ export default function TrenchRepository() {
           </motion.div>
         ))}
         
-        <motion.a 
-          href="https://tally.so/placeholder" 
-          target="_blank" 
-          rel="noreferrer"
-          className="flex flex-col items-center justify-center p-6 rounded-2xl border border-dashed border-[#00f0ff]/30 bg-[#00f0ff]/5 hover:bg-[#00f0ff]/10 hover:border-[#00f0ff]/60 transition-colors cursor-pointer group"
+        {/* TODO: replace with real Tally.so form URL once the Tally → Notion pipeline is wired up (see ecosystem-docs/decisions.md) */}
+        <motion.div
+          className="relative flex flex-col items-center justify-center p-6 rounded-2xl border border-dashed border-[#00f0ff]/30 bg-[#00f0ff]/5 group"
         >
-          <Terminal size={32} className="text-[#00f0ff] mb-4 group-hover:scale-110 transition-transform" />
+          <span className="absolute top-3 right-3 text-[9px] font-black uppercase tracking-widest text-black bg-[#00f0ff] px-2 py-0.5 rounded-full">
+            Coming Soon
+          </span>
+          <Terminal size={32} className="text-[#00f0ff] mb-4" />
           <h3 className="text-white font-black uppercase tracking-widest mb-2">Upload Telemetry</h3>
-          <p className="text-xs text-[#00f0ff]/60 text-center font-mono">Submit a mitigation protocol to the global repository.</p>
-        </motion.a>
+          <p className="text-xs text-[#00f0ff]/60 text-center font-mono">Submit a mitigation protocol to the global repository. Submission portal opens soon.</p>
+        </motion.div>
       </div>
     </div>
   );
