@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# firebase deploy cache (contains env copies + build output)
+.firebase/
+firebase-debug.log

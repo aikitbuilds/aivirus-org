@@ -1,0 +1,36 @@
+{
+  "tally_form_fields": [
+    {
+      "label": "Threat Profile",
+      "type": "dropdown",
+      "options": ["Isolation/Boredom", "Overworking/Ego", "Anger/Resentments", "Physical Exhaustion"],
+      "required": true
+    },
+    {
+      "label": "System Failure",
+      "type": "short_answer",
+      "placeholder": "What specifically triggered the slip or craving?",
+      "required": true
+    },
+    {
+      "label": "Mitigation Protocol",
+      "type": "long_answer",
+      "placeholder": "What action did you take to re-establish your baseline?",
+      "required": true
+    },
+    {
+      "label": "Result",
+      "type": "dropdown",
+      "options": ["Baseline Restored", "Escalated to Sponsor", "Still in Deficit", "Relapse"],
+      "required": true
+    }
+  ],
+  "notion_database_properties": {
+    "Threat Profile": { "type": "select" },
+    "System Failure": { "type": "title" },
+    "Mitigation Protocol": { "type": "rich_text" },
+    "Result": { "type": "select" },
+    "Date Logged": { "type": "date" },
+    "Status": { "type": "status", "options": ["Pending Review", "Approved", "Archived"] }
+  }
+}
