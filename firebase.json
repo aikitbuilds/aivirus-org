@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "aivirus",
+    "site": "gen-lang-client-0686783756",
     "source": ".",
     "ignore": [
       "firebase.json",

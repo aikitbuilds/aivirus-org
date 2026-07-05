@@ -103,12 +103,20 @@ export default function TheVirusHub() {
           <p className="max-w-2xl mx-auto text-neutral-300 leading-relaxed text-lg">
             Because every vector runs the same underlying program, the same framework fights all of them. The 12 Steps are the open-source defense that has held the line for nearly 90 years — a system handover, a deep scan, and daily security patches, run with other people.
           </p>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 mt-10 bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-xl transition-colors"
-          >
-            See the 12-Step Defense <ArrowRight size={16} />
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-10">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-xl transition-colors"
+            >
+              See the 12-Step Defense <ArrowRight size={16} />
+            </Link>
+            <Link
+              href="/bio12"
+              className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-xl transition-colors"
+            >
+              The BIO 12 Firewall <ArrowRight size={16} />
+            </Link>
+          </div>
         </div>
       </section>
 
