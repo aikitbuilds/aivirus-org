@@ -44,7 +44,31 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-black">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "MedicalCondition",
+            name: "Addiction Intelligence Virus (AIV)",
+            alternateName: "Substance Use Disorder and Behavioral Addiction",
+            description: "Addiction framed as a biological hijack of the brain's reward circuitry — altering dopamine D2 receptor density and prefrontal control, driving compulsory behavior.",
+            associatedAnatomy: { "@type": "AnatomicalStructure", name: "Nucleus Accumbens and Prefrontal Cortex" },
+            possibleTreatment: { "@type": "MedicalTherapy", name: "12-Step Recovery and Somatic Reconditioning" },
+            subjectOf: { "@type": "FAQPage", mainEntity: [{ "@type": "Question", name: "What is the Addiction Intelligence Virus (AIV)?", acceptedAnswer: { "@type": "Answer", text: "AIV is a neurobiological model framing addiction as an invasive hijack of the body's dopamine pathways — not a moral or willpower failure." } }] },
+          }) }}
+        />
+        <header className="sticky top-0 z-50 border-b border-[#27272a] bg-black/80 backdrop-blur-md">
+          <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+            <a href="/" className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#dc2626] animate-pulse" />
+              <span className="font-mono text-sm font-bold tracking-widest uppercase text-[#fafafa]">AIVirus.org</span>
+            </a>
+            <a href="https://aafiends.com" className="bg-[#dc2626] hover:bg-red-700 text-white font-bold text-[11px] uppercase font-mono tracking-widest px-4 py-2 rounded transition-colors">Run Antivirus &rarr;</a>
+          </div>
+        </header>
+        {children}
+      </body>
     </html>
   );
 }

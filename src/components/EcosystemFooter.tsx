@@ -9,7 +9,7 @@ const PROPERTIES = [
     name: "AAfiends.com",
     tagline: "The daily dashboard. Data Over Denial.",
     href: "https://aafiends.com",
-    dot: "bg-[#00FF00]",
+    dot: "bg-[#10b981]",
   },
   {
     name: "RaceFiends.com",
@@ -65,7 +65,7 @@ export default function EcosystemFooter() {
           )}
         </div>
         <div className="mt-6 flex flex-col items-center gap-1.5">
-          <a href="https://aafiends.com/90rr" target="_blank" rel="noopener noreferrer" className="text-[10px] font-mono font-black text-[#00FF00] hover:opacity-80 uppercase tracking-widest">
+          <a href="https://aafiends.com/90rr" target="_blank" rel="noopener noreferrer" className="text-[10px] font-mono font-black text-[#10b981] hover:opacity-80 uppercase tracking-widest">
             Free 90 R&amp;R recovery journal → aafiends.com/90rr
           </a>
           <p className="text-center text-[9px] text-neutral-600 font-mono uppercase tracking-widest">
