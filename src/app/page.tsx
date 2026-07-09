@@ -88,6 +88,18 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TRENCH REPOSITORY */}
+      <section className="max-w-5xl mx-auto px-6 py-12">
+        <div className="bg-[#09090b] border border-[#27272a] rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6 justify-between">
+          <div>
+            <div className="text-[11px] font-mono uppercase tracking-widest text-[#dc2626] mb-1">Crowdsourced immunity</div>
+            <h2 className="text-2xl font-black tracking-tight">The Trench Repository</h2>
+            <p className="text-sm text-[#a1a1aa] max-w-xl mt-1">Real, field-tested mitigation protocols &mdash; the threat, the failure, the fix that worked. Anonymous and reviewed.</p>
+          </div>
+          <Link href="/trench" className="shrink-0 inline-flex items-center gap-2 border border-[#27272a] hover:border-[#dc2626] text-[#fafafa] font-black uppercase tracking-widest text-xs px-6 py-4 rounded-lg transition-colors">Open the repository &rarr;</Link>
+        </div>
+      </section>
+
       {/* HERO POEM */}
       <section className="max-w-3xl mx-auto px-6 py-14">
         <div className="bg-[#09090b] border border-[#27272a] rounded-2xl p-8">
