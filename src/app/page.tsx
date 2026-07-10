@@ -12,7 +12,7 @@ export default function Home() {
       {/* HERO / MANIFESTO */}
       <div className="relative border-b border-white/5">
         <div className="absolute inset-0 z-0">
-          <img src="/zombie_hero.png" alt="AIV Infection Background" className="w-full h-full object-cover opacity-20 grayscale" />
+          <img src="/zombie_hero.png" alt="AIV Infection Background" className="w-full h-full object-cover object-top opacity-20 grayscale" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent" />
         </div>
@@ -44,7 +44,7 @@ export default function Home() {
       {/* SICKNESS vs ANTIVIRUS */}
       <section className="max-w-5xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-6">
         <div className="bg-[#09090b] border border-[#27272a] rounded-2xl relative overflow-hidden flex flex-col">
-          <img src="/infected_person_1.png" alt="Sickness" className="w-full h-48 object-cover opacity-60 grayscale border-b border-[#27272a]" />
+          <img src="/infected_person_1.png" alt="Sickness" className="w-full h-48 object-cover object-top opacity-60 grayscale border-b border-[#27272a]" />
           <div className="p-7 relative flex-grow">
             <div className="absolute -top-8 -right-8 w-40 h-40 bg-[#dc2626]/10 rounded-full blur-3xl pointer-events-none" />
             <div className="flex items-center gap-2 mb-3"><ShieldAlert className="text-[#dc2626]" size={20} /><h2 className="text-lg font-black uppercase tracking-wide text-[#dc2626] font-mono">The parasitic sickness (AIV)</h2></div>
@@ -57,7 +57,7 @@ export default function Home() {
           </div>
         </div>
         <div className="bg-[#09090b] border border-[#27272a] rounded-2xl relative overflow-hidden flex flex-col">
-          <img src="/infected_person_2.png" alt="Antivirus" className="w-full h-48 object-cover opacity-60 grayscale border-b border-[#27272a]" />
+          <img src="/infected_person_2.png" alt="Antivirus" className="w-full h-48 object-cover object-top opacity-60 grayscale border-b border-[#27272a]" />
           <div className="p-7 relative flex-grow">
             <div className="absolute -top-8 -right-8 w-40 h-40 bg-[#10b981]/10 rounded-full blur-3xl pointer-events-none" />
             <div className="flex items-center gap-2 mb-3"><ShieldCheck className="text-[#10b981]" size={20} /><h2 className="text-lg font-black uppercase tracking-wide text-[#10b981] font-mono">The active antivirus (the app)</h2></div>
@@ -104,7 +104,7 @@ export default function Home() {
       {/* TRENCH REPOSITORY */}
       <section className="max-w-5xl mx-auto px-6 py-12">
         <div className="bg-[#09090b] border border-[#27272a] rounded-2xl relative overflow-hidden flex flex-col md:flex-row items-center gap-6 justify-between">
-          <img src="/vanguard_person.png" alt="Vanguard" className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale mix-blend-screen pointer-events-none" />
+          <img src="/vanguard_person.png" alt="Vanguard" className="absolute inset-0 w-full h-full object-cover object-top opacity-20 grayscale mix-blend-screen pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent pointer-events-none"></div>
           
           <div className="p-8 relative z-10 flex flex-col md:flex-row items-center gap-6 justify-between w-full">
@@ -137,7 +137,7 @@ And track my daily habits just to hold the baseline fine.</pre>
       {/* FELLOWSHIP BANNER */}
       <section className="w-full relative py-24 flex items-center justify-center border-y border-white/5 my-12">
         <div className="absolute inset-0 z-0">
-          <img src="/fellowship_group.png" alt="Fellowship" className="w-full h-full object-cover opacity-30 grayscale" />
+          <img src="/fellowship_group.png" alt="Fellowship" className="w-full h-full object-cover object-top opacity-30 grayscale" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
         </div>
         <div className="relative z-10 text-center px-6">
