@@ -68,6 +68,10 @@ export default function EcosystemFooter() {
           <a href="https://aafiends.com/90rr" target="_blank" rel="noopener noreferrer" className="text-[10px] font-mono font-black text-[#10b981] hover:opacity-80 uppercase tracking-widest">
             Free 90 R&amp;R recovery journal → aafiends.com/90rr
           </a>
+          <a href="https://www.venmo.com/u/aafiends" target="_blank" rel="noopener noreferrer" className="text-[10px] font-mono font-black text-[#f59e0b] hover:opacity-80 uppercase tracking-widest">
+            ☕ Buy me a coffee → venmo.com/u/aafiends
+          </a>
+          <p className="text-[9px] text-neutral-600 font-mono uppercase tracking-widest">Or Zelle: aafiends@gmail.com</p>
           <p className="text-center text-[9px] text-neutral-600 font-mono uppercase tracking-widest">
             Built by members, for members · Non-affiliated with AA World Services · <a href="mailto:aafiends@gmail.com" className="hover:text-neutral-400">aafiends@gmail.com</a>
           </p>
