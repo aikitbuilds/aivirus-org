@@ -4,25 +4,28 @@
 // aivirus.org previously had zero outbound links to anything, including the
 // app it exists to funnel people toward. AAfiends.com and RaceFiends.com get
 // the matching version of this component; keep the three in sync.
+// Standardized 2026-07-25: same three cards, same one-line job, same order on
+// all three sites — diagnosis → treatment → movement, which is the order a
+// person actually moves through them.
 const PROPERTIES = [
   {
+    name: "AIVirus.org",
+    tagline: "The diagnosis. Understand the threat.",
+    href: "/",
+    dot: "bg-red-500 animate-pulse",
+    current: true,
+  },
+  {
     name: "AAfiends.com",
-    tagline: "The daily dashboard. Data Over Denial.",
+    tagline: "The treatment. Run the daily program.",
     href: "https://aafiends.com",
     dot: "bg-[#10b981]",
   },
   {
     name: "RaceFiends.com",
-    tagline: "The pavement. Carry the standard.",
+    tagline: "The movement. Carry the standard.",
     href: "https://racefiends.com",
-    dot: "bg-red-500",
-  },
-  {
-    name: "AIVirus.org",
-    tagline: "The threat. Run the diagnostic.",
-    href: "/",
-    dot: "bg-red-500 animate-pulse",
-    current: true,
+    dot: "bg-orange-500",
   },
 ];
 

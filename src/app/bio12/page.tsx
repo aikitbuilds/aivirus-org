@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Biohazard, ArrowLeft, ArrowRight, ShieldCheck, Footprints, Moon, Apple, Wind, Flame } from "lucide-react";
 import EcosystemFooter from "@/components/EcosystemFooter";
 
-const AAFIENDS_URL = "https://aafiendscom.web.app";
+const AAFIENDS_URL = "https://aafiends.com";
 
 export const metadata: Metadata = {
   title: "BIO 12 — The Daily Firewall Against Addiction | AIVirus.org",

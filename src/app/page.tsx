@@ -75,7 +75,13 @@ export default function Home() {
       <section id="diagnostic" className="max-w-4xl mx-auto px-6 py-14 scroll-mt-20">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-black tracking-tight mb-2">Run the diagnostic</h2>
-          <p className="text-sm text-[#a1a1aa]">Identify your susceptibility and primary host profile in about 60 seconds.</p>
+          <p className="text-sm text-[#a1a1aa] max-w-xl mx-auto leading-relaxed">
+            Identify your infection vector, your position on the recovery horizon, and your host profile — then get the
+            first three moves, staged for where you actually are. About 90 seconds.
+          </p>
+          <p className="text-xs text-[#52525b] font-mono mt-3">
+            No account, no email required. Your answers stay in your browser and are never sent to us.
+          </p>
         </div>
         <DiagnosticWizard />
       </section>

@@ -1,24 +1,37 @@
 "use client";
 
-// 12-question host-susceptibility diagnostic (blueprint §5). Maps answers to one
-// of 5 animal profiles, collects the sobriety date, then funnels into the app
-// (aafiends.com) — the "run the antivirus" hand-off. Tactical dark palette:
-// black canvas, crimson threat (#dc2626), emerald antivirus (#10b981). No neon.
+// The vector-identification scan. Structure (blueprint §5 + the AIV research
+// report's "Enhanced Diagnostic: Vector Identification"):
+//
+//   0. WHICH VECTOR(S) — the question the site exists to ask, and the one this
+//      wizard previously never asked. Drives the whole tailored readout.
+//   1-12. Host susceptibility → one of 5 animal profiles + the recovery stage.
+//   13. Optional sobriety date.
+//   → navigates to /scan, a real shareable URL that renders the full readout
+//      server-side (so the 10 vectors' depth content never enters this bundle).
+//
+// Tactical dark palette: black canvas, crimson threat (#dc2626), emerald
+// antivirus (#10b981). No neon.
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { vectors } from "@/data/vectors";
+import { iconFor } from "@/lib/vector-styles";
+import type { ProfileKey, StageKey } from "@/data/host-profiles";
+import { SCAN_KEY, type ScanResult } from "@/data/scan-result";
 import {
   Shield, Anchor, Compass, Navigation, Sprout, User, Users, Map, Ghost, Briefcase,
   Flame, BatteryLow, Brain, MessageSquare, Smartphone, PenTool, AlertTriangle, Brush,
   Table, Clipboard, Laptop, Server, HelpCircle, Gamepad2, Mail, Cpu, Repeat, Clock,
   Moon, Wrench, Infinity as InfinityIcon, Hourglass, Octagon, Bed, VenetianMask,
   Handshake, BarChart3, Megaphone, Bot, Heart, Home, BookOpen, CheckCircle2, ArrowRight,
+  Biohazard,
   type LucideIcon,
 } from "lucide-react";
 
-const AAFIENDS = "https://aafiends.com";
-
-type P = "A" | "B" | "C" | "D" | "E"; // Eagle, Elephant, Turtle, Chameleon, Tiger
+// Eagle, Elephant, Turtle, Chameleon, Tiger — defined once in host-profiles.
+type P = ProfileKey;
 interface Opt { icon: LucideIcon; label: string; value: string; profile: P; }
 interface Q { id: number; text: string; category: string; options: Opt[]; }
 
@@ -85,22 +98,39 @@ const QUESTIONS: Q[] = [
     { icon: BookOpen, label: "Just want to learn", value: "education", profile: "A" } ] },
 ];
 
-const PROFILE: Record<P, { emoji: string; name: string; who: string; lie: string; fix: string }> = {
-  A: { emoji: "🦅", name: "The Eagle", who: "The Founder", lie: "“It's a performance enhancer — use it to work longer.”", fix: "The Rest Mandate: track sleep & RHR; cut the terminal at curfew." },
-  B: { emoji: "🐘", name: "The Elephant", who: "The Martyr", lie: "“Look at all you carry. You deserve an escape.”", fix: "The Boundary Toggle: did I say NO to protect my recovery today?" },
-  C: { emoji: "🐢", name: "The Turtle", who: "The Escapist", lie: "“Sit in silence and the memories catch you. Numb out.”", fix: "Somatic grounding: 15-min walks, cold water, breath." },
-  D: { emoji: "🦎", name: "The Chameleon", who: "The Validator", lie: "“You're boring sober. Take this so they'll accept you.”", fix: "Radical honesty log + anonymous service work." },
-  E: { emoji: "🐅", name: "The Tiger", who: "The Saboteur", lie: "“Routine is boring. Blow it up to feel alive.”", fix: "Extreme friction: cold plunges, Zone 2, channel the charge." },
-};
+// Host-profile display data now lives in @/data/host-profiles so the
+// server-rendered /scan readout can use the same definitions.
 
 const box = "w-full max-w-xl mx-auto bg-[#09090b] border border-[#27272a] p-6 md:p-8 rounded-2xl";
 
+// Q1 is the recovery-horizon question; its value is carried to the readout so
+// the "first moves" can be staged appropriately (someone at day 3 and someone
+// at year 6 need different instructions).
+// Q1's option values double as the stage key. This map exists to make that
+// coupling explicit and to fail safe if Q1's wording ever changes.
+const STAGE_FROM_Q1: Record<string, StageKey> = {
+  trench: "trench",
+  stabilizing: "stabilizing",
+  baseline: "baseline",
+  vanguard: "vanguard",
+};
+
 export default function DiagnosticWizard() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [phase, setPhase] = useState<"quiz" | "calibrate" | "result">("quiz");
+  const [phase, setPhase] = useState<"vector" | "quiz" | "calibrate">("vector");
+  const [picked, setPicked] = useState<string[]>([]);
   const [profile, setProfile] = useState<P>("A");
   const [sober, setSober] = useState("");
+
+  // Up to two vectors: comorbidity is the norm, not the exception, and naming
+  // the second one is often the more useful half of the result.
+  const toggleVector = (slug: string) => {
+    setPicked((cur) =>
+      cur.includes(slug) ? cur.filter((s) => s !== slug) : cur.length >= 2 ? cur : [...cur, slug]
+    );
+  };
 
   const pick = (o: Opt) => {
     const next = { ...answers, [QUESTIONS[step].id]: o.value };
@@ -112,10 +142,92 @@ export default function DiagnosticWizard() {
     setProfile(top); setPhase("calibrate");
   };
 
-  const goApp = () => {
-    const url = `${AAFIENDS}/onboarding?source=aivirus&profile=${encodeURIComponent(PROFILE[profile].name)}${sober ? `&sober=${sober}` : ""}`;
-    window.location.href = url;
+  // Results go to sessionStorage, NOT the query string.
+  //
+  // The obvious implementation is /scan?v=pornography&sober=2019-04-02 — and it
+  // would be a privacy leak. Query strings land in Firebase Hosting access
+  // logs, in browser history, and in cross-device history sync. For this
+  // content specifically ("which addiction do you have" plus a sobriety date)
+  // that is not acceptable, and a shareable readout URL is a liability here
+  // rather than a feature. sessionStorage keeps it on the device, dies with the
+  // tab, and lets the privacy promise on this page actually be true.
+  const goResult = () => {
+    const payload: ScanResult = {
+      v: picked[0],
+      v2: picked[1],
+      profile,
+      stage: STAGE_FROM_Q1[answers[1] ?? ""] ?? "trench",
+      sober: sober || undefined,
+    };
+    try {
+      sessionStorage.setItem(SCAN_KEY, JSON.stringify(payload));
+    } catch {
+      // Private-browsing modes can throw on write. The readout degrades to its
+      // "no scan data" state, which sends the person back here — acceptable.
+    }
+    router.push("/scan");
   };
+
+  /* ---------- PHASE 0: which vector(s) ---------- */
+  if (phase === "vector") {
+    return (
+      <div className={box}>
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-xs font-mono text-[#52525b] uppercase tracking-wider">Vector identification</span>
+          <span className="text-xs font-mono text-[#dc2626] font-bold">Step 1 / 13</span>
+        </div>
+        <div className="w-full h-1 bg-[#27272a] rounded-full overflow-hidden mb-6">
+          <div className="h-full bg-[#dc2626] transition-all duration-300" style={{ width: `${(1 / 13) * 100}%` }} />
+        </div>
+
+        <h3 className="text-lg font-bold text-[#fafafa] mb-1">Which one is running you?</h3>
+        <p className="text-sm text-[#a1a1aa] mb-5">
+          Pick one, or two if they travel together — most do. Your answers stay in this browser tab and are never sent
+          to us.
+        </p>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-5">
+          {vectors.map((v) => {
+            const Icon = iconFor(v.icon);
+            const on = picked.includes(v.slug);
+            const order = picked.indexOf(v.slug);
+            return (
+              <button
+                key={v.slug}
+                onClick={() => toggleVector(v.slug)}
+                aria-pressed={on}
+                className={`relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-150 text-center ${
+                  on
+                    ? "bg-[#dc2626]/10 border-[#dc2626] shadow-[0_0_15px_rgba(220,38,38,0.15)]"
+                    : "bg-[#0b0b0d] border-[#27272a] hover:border-[#52525b]"
+                }`}
+              >
+                {on && (
+                  <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#dc2626] text-white text-[9px] font-black flex items-center justify-center">
+                    {order + 1}
+                  </span>
+                )}
+                <Icon className={`w-6 h-6 ${on ? "text-[#dc2626]" : "text-[#a1a1aa]"}`} />
+                <span className="text-[11px] font-medium text-[#fafafa] leading-tight">{v.name}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={() => setPhase("quiz")}
+          disabled={picked.length === 0}
+          className="w-full bg-[#dc2626] hover:bg-red-700 disabled:bg-[#27272a] disabled:text-[#52525b] disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-lg tracking-wider uppercase text-xs transition-colors flex items-center justify-center gap-2"
+        >
+          {picked.length === 0 ? "Select at least one" : "Continue"}
+          {picked.length > 0 && <ArrowRight size={14} />}
+        </button>
+        <p className="text-center text-[11px] text-[#52525b] font-mono mt-3 leading-relaxed">
+          Not sure? Pick the one you&apos;d least like to explain to someone.
+        </p>
+      </div>
+    );
+  }
 
   if (phase === "quiz") {
     const q = QUESTIONS[step];
@@ -125,10 +237,10 @@ export default function DiagnosticWizard() {
           <motion.div key={step} initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.15 }}>
             <div className="flex justify-between items-center mb-4">
               <span className="text-xs font-mono text-[#52525b] uppercase tracking-wider">{q.category}</span>
-              <span className="text-xs font-mono text-[#dc2626] font-bold">Step {step + 1} / 12</span>
+              <span className="text-xs font-mono text-[#dc2626] font-bold">Step {step + 2} / 13</span>
             </div>
             <div className="w-full h-1 bg-[#27272a] rounded-full overflow-hidden mb-6">
-              <div className="h-full bg-[#dc2626] transition-all duration-300" style={{ width: `${((step + 1) / 12) * 100}%` }} />
+              <div className="h-full bg-[#dc2626] transition-all duration-300" style={{ width: `${((step + 2) / 13) * 100}%` }} />
             </div>
             <h3 className="text-lg font-bold text-[#fafafa] mb-6">{q.text}</h3>
             <div className="grid grid-cols-2 gap-3 md:gap-4">
@@ -139,43 +251,74 @@ export default function DiagnosticWizard() {
                   <span className="text-xs font-medium text-[#fafafa] leading-tight">{o.label}</span>
                 </button> ); })}
             </div>
-            {step > 0 && <button onClick={() => setStep(step - 1)} className="w-full text-center text-xs text-[#52525b] hover:text-[#a1a1aa] font-mono mt-4">&larr; Back</button>}
+            <button
+              onClick={() => (step > 0 ? setStep(step - 1) : setPhase("vector"))}
+              className="w-full text-center text-xs text-[#52525b] hover:text-[#a1a1aa] font-mono mt-4"
+            >
+              &larr; Back
+            </button>
           </motion.div>
         </AnimatePresence>
       </div>
     );
   }
 
-  if (phase === "calibrate") {
-    return (
-      <div className={box}>
-        <div className="flex items-center gap-2 text-[#10b981] mb-4"><CheckCircle2 className="w-5 h-5" /><span className="text-xs font-mono uppercase tracking-wider font-bold">Scan Complete</span></div>
-        <h3 className="text-xl font-bold text-[#fafafa] mb-1">Calibrate your dashboard</h3>
-        <p className="text-sm text-[#a1a1aa] mb-6">One number powers your predictive "days sober" metrics.</p>
-        <label className="block text-xs font-mono text-[#a1a1aa] uppercase tracking-wider mb-2">Your sobriety date (optional)</label>
-        <input type="date" value={sober} onChange={(e) => setSober(e.target.value)} className="w-full bg-[#0b0b0d] border border-[#27272a] text-[#fafafa] p-3 rounded-lg focus:outline-none focus:border-[#dc2626] text-sm font-mono mb-5" />
-        <button onClick={() => setPhase("result")} className="w-full bg-[#dc2626] hover:bg-red-700 text-white font-bold py-3.5 rounded-lg tracking-wider uppercase text-xs transition-colors">See your result &rarr;</button>
-      </div>
-    );
-  }
+  /* ---------- FINAL: optional sobriety date, then the readout ---------- */
+  const primary = vectors.find((v) => v.slug === picked[0]);
+  const PrimaryIcon = primary ? iconFor(primary.icon) : Biohazard;
 
-  const p = PROFILE[profile];
   return (
     <div className={box}>
-      <div className="text-center flex flex-col items-center gap-3">
-        <div className="text-5xl">{p.emoji}</div>
-        <div className="text-xs font-mono uppercase tracking-widest text-[#dc2626]">Primary host profile</div>
-        <h3 className="text-2xl font-black text-[#fafafa]">{p.name} <span className="text-[#a1a1aa] font-bold text-lg">· {p.who}</span></h3>
-        <p className="text-sm text-[#a1a1aa] italic max-w-md">The lie it tells you: {p.lie}</p>
-        <div className="w-full bg-[#0b0b0d] border border-[#10b981]/30 rounded-xl p-4 text-left mt-2">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#10b981] mb-1">Your remediation protocol</div>
-          <p className="text-sm text-[#fafafa]">{p.fix}</p>
-        </div>
-        <button onClick={goApp} className="w-full mt-3 bg-[#10b981] hover:bg-emerald-600 text-black font-black py-4 rounded-lg tracking-wider uppercase text-xs flex items-center justify-center gap-2 transition-colors">
-          Run the Antivirus — open your dashboard <ArrowRight size={16} />
-        </button>
-        <a href="https://aafiends.com/90rr" className="text-xs font-mono text-[#a1a1aa] hover:text-[#fafafa] uppercase tracking-widest">or start the free 90 R&amp;R journal &rarr;</a>
+      <div className="flex items-center gap-2 text-[#10b981] mb-4">
+        <CheckCircle2 className="w-5 h-5" />
+        <span className="text-xs font-mono uppercase tracking-wider font-bold">Scan complete</span>
       </div>
+
+      {primary && (
+        <div className="flex items-center gap-3 bg-[#0b0b0d] border border-[#dc2626]/40 rounded-xl p-4 mb-6">
+          <PrimaryIcon className="w-7 h-7 text-[#dc2626] shrink-0" />
+          <div>
+            <div className="text-[10px] font-mono uppercase tracking-widest text-[#52525b]">Primary vector detected</div>
+            <div className="text-sm font-black text-[#fafafa] uppercase tracking-tight">
+              {primary.name}
+              {picked[1] && (
+                <span className="text-[#a1a1aa] font-bold">
+                  {" "}+ {vectors.find((v) => v.slug === picked[1])?.name}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="text-xs font-mono text-[#52525b] uppercase tracking-wider mb-3">Final step</div>
+      <h3 className="text-xl font-bold text-[#fafafa] mb-1">One last thing</h3>
+      <p className="text-sm text-[#a1a1aa] mb-6">
+        Your sobriety date, if you have one — it just adds a day count to the readout. Like everything else here, it
+        stays in this browser tab and is never sent to us.
+      </p>
+      <label htmlFor="sober-date" className="block text-xs font-mono text-[#a1a1aa] uppercase tracking-wider mb-2">
+        Sobriety date (optional)
+      </label>
+      <input
+        id="sober-date"
+        type="date"
+        value={sober}
+        onChange={(e) => setSober(e.target.value)}
+        className="w-full bg-[#0b0b0d] border border-[#27272a] text-[#fafafa] p-3 rounded-lg focus:outline-none focus:border-[#dc2626] text-sm font-mono mb-5"
+      />
+      <button
+        onClick={goResult}
+        className="w-full bg-[#10b981] hover:bg-emerald-600 text-black font-black py-4 rounded-lg tracking-wider uppercase text-xs flex items-center justify-center gap-2 transition-colors"
+      >
+        See your readout <ArrowRight size={16} />
+      </button>
+      <button
+        onClick={() => { setPhase("quiz"); setStep(QUESTIONS.length - 1); }}
+        className="w-full text-center text-xs text-[#52525b] hover:text-[#a1a1aa] font-mono mt-4"
+      >
+        &larr; Back
+      </button>
     </div>
   );
 }

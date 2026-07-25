@@ -116,6 +116,12 @@ export default function TheVirusHub() {
             >
               The BIO 12 Firewall <ArrowRight size={16} />
             </Link>
+            <Link
+              href="/data"
+              className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-xl transition-colors"
+            >
+              All the data <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
